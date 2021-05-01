@@ -7,9 +7,12 @@
 export function sortStrings(arr, param = 'asc') {
 
    return arr.slice().sort(function (a, b) {
-      return param === 'desc' ?
-         b.localeCompare(a, { sensitivity: 'variant' }, { caseFirst: 'upper' })
-         : a.localeCompare(b, { sensitivity: 'variant' }, { caseFirst: 'upper' });
-   });
+      if (param === 'desc') {
+         return b.localeCompare(a, { sensitivity: 'variant' }, { caseFirst: 'upper' })
+      }
+      else {
+         return a.localeCompare(b, { sensitivity: 'variant' }, { caseFirst: 'upper' })
+      }
+   })
 }
 
