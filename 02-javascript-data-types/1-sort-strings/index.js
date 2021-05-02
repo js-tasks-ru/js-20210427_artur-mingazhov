@@ -6,13 +6,9 @@
  */
 export function sortStrings(arr, param = 'asc') {
 
-   return arr.slice().sort(function (a, b) {
-      if (param === 'desc') {
-         return b.localeCompare(a, { sensitivity: 'variant' }, { caseFirst: 'upper' })
-      }
-      else {
-         return a.localeCompare(b, { sensitivity: 'variant' }, { caseFirst: 'upper' })
-      }
-   })
+   return [...arr].sort((a, b) =>
+
+      (param === 'desc' ? -1 : 1) * a.localeCompare(b, { sensitivity: 'variant' }, { caseFirst: 'upper' })
+   )
 }
 
