@@ -5,4 +5,34 @@
  */
 export function createGetter(path) {
 
+   return function (obj) {
+
+      if (!obj) return
+      //if (typeof obj !== 'object') return obj
+      if (Object.keys(obj).length === 0) return
+
+      const props = path.split('.')
+
+      for (const prop of props) {
+         obj = obj[prop]
+      }
+
+      return obj
+   }
+
+   /* const props = path.split('.')
+
+   return function f(obj) {
+
+      if (!obj) return
+      if (typeof obj !== 'object') return obj
+      if (Object.keys(obj).length === 0) return
+
+      if (props.length) {
+         return f(obj[props.shift()])
+      }
+
+      return obj;
+   } */
+
 }
