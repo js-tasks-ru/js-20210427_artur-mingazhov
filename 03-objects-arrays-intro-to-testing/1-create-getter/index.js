@@ -5,34 +5,54 @@
  */
 export function createGetter(path) {
 
+   const props = path.split('.')
+
    return function (obj) {
 
-      if (!obj) return
-      //if (typeof obj !== 'object') return obj
-      if (Object.keys(obj).length === 0) return
-
-      const props = path.split('.')
-
       for (const prop of props) {
-         obj = obj[prop]
+
+         if (obj)
+            obj = obj[prop]
+         else return
       }
 
       return obj
    }
+}
 
-   /* const props = path.split('.')
+//======================================
 
-   return function f(obj) {
+/* export function createGetter(path) {
 
-      if (!obj) return
-      if (typeof obj !== 'object') return obj
-      if (Object.keys(obj).length === 0) return
+   const props = path.split('.')
 
-      if (props.length) {
-         return f(obj[props.shift()])
+   return function f(obj, prop = 0) {
+
+      if (obj && prop < props.length) {
+
+         return f(obj[props[prop]], ++prop)
       }
 
       return obj;
-   } */
+   }
+} */
 
-}
+//=============================================
+
+/* export function createGetter(path) {
+
+   const props = path.split('.')
+
+   let prop = 0;
+
+   return function f(obj) {
+
+      if (obj && prop < props.length) {
+
+         return f(obj[props[prop++]])
+      }
+
+      prop = 0;
+      return obj;
+   }
+} */
