@@ -1,6 +1,7 @@
 export default class NotificationMessage {
 
-   static isActive = false;
+
+   static staticElement = null;
 
    constructor(message = '', { duration = 1000, type = "success" } = {}) {
 
@@ -29,22 +30,20 @@ export default class NotificationMessage {
 
       element.innerHTML = this.template;
 
-      this.element = element.firstElementChild
+      this.element = element.firstElementChild;
+
    }
 
    show(elem = document.body) {
 
-      if (NotificationMessage.isActive) {
+      if (NotificationMessage.staticElement) {
 
-         document.querySelector('.notification').remove();
-         this.destroy()
+         NotificationMessage.staticElement.remove();
       }
 
-      NotificationMessage.isActive = true;
+      NotificationMessage.staticElement = this.element;
 
       setTimeout(() => {
-
-         NotificationMessage.isActive = false
          this.destroy()
       }, this.duration)
 
