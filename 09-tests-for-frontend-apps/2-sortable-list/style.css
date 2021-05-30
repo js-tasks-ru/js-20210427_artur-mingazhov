@@ -1,8 +1,8 @@
 /* Common styles */
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap");
 
 body {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
 }
 
 :root {
@@ -110,4 +110,12 @@ body {
   margin: 16px 0;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+.to-move {
+  position: absolute;
+  margin: 0px;
+}
+.hide {
+  display: none;
 }
