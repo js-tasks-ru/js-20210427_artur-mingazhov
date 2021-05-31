@@ -30,6 +30,7 @@ body {
   position: relative;
   padding: 0;
   margin: 12px 0;
+  width: 100%;
 }
 
 .sortable-list__item {
@@ -112,10 +113,6 @@ body {
   box-sizing: border-box;
 }
 
-.to-move {
-  position: absolute;
-  margin: 0px;
-}
 .hide {
   display: none;
 }

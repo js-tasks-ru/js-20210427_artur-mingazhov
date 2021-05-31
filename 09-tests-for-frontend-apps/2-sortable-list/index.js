@@ -7,19 +7,15 @@ export default class SortableList {
       if (target) {
 
          const movingItem = event.target.closest('.sortable-list__item');
-
-         movingItem.classList.add('sortable-list__placeholder')
-
-         const shiftX = event.clientX - movingItem.getBoundingClientRect().left + movingItem.parentNode.getBoundingClientRect().left;
-         const shiftY = event.clientY - movingItem.getBoundingClientRect().top + movingItem.parentNode.getBoundingClientRect().top;
-
          const hightOfMovingItem = movingItem.offsetHeight;
          const widthOfMovingItem = movingItem.offsetWidth;
+         movingItem.classList.add('sortable-list__item_dragging')
 
-         movingItem.style.width = widthOfMovingItem + 'px'
+         const shiftX = event.clientX - movingItem.getBoundingClientRect().left;
+         const shiftY = event.clientY - movingItem.getBoundingClientRect().top;
+
          movingItem.style.height = hightOfMovingItem + 'px'
-
-         movingItem.classList.add('to-move')
+         movingItem.style.width = widthOfMovingItem + 'px'
 
          const placeholder = this.getPlaceholder(widthOfMovingItem, hightOfMovingItem);
 
@@ -49,7 +45,7 @@ export default class SortableList {
 
             if (droppableBelow) {
 
-               if (droppableBelow.nextSibling && droppableBelow.nextSibling.closest('.placeholder')) {
+               if (droppableBelow.nextSibling && droppableBelow.nextSibling.closest('.sortable-list__placeholder')) {
 
                   droppableBelow.before(placeholder)
                } else {
@@ -65,8 +61,8 @@ export default class SortableList {
             movingItem.style.left = 'auto';
             movingItem.style.top = 'auto';
 
-            movingItem.classList.remove('to-move')
-            movingItem.classList.remove('sortable-list__placeholder')
+            movingItem.classList.remove('sortable-list__item_dragging')
+
          }
 
          document.addEventListener('pointermove', onMouseMove);
@@ -119,15 +115,14 @@ export default class SortableList {
       }
 
    }
-   getPlaceholder(width, hight) {
+   getPlaceholder(width, height) {
 
       const placeholder = document.createElement('li');
 
       placeholder.classList.add('sortable-list__placeholder')
-      placeholder.classList.add('placeholder')
 
       placeholder.style.width = width + 'px'
-      placeholder.style.height = hight + 'px'
+      placeholder.style.height = height + 'px'
 
       return placeholder;
    }
