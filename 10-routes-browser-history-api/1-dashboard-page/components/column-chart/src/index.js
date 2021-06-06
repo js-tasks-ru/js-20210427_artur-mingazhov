@@ -3,73 +3,73 @@ import fetchJson from '../../../utils/fetch-json.js';
 const BACKEND_URL = 'https://course-js.javascript.ru';
 
 export default class ColumnChart {
-   chartHeight = 50;
+  chartHeight = 50;
 
-   constructor({
-      url = '',
-      range = {
-         from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-         to: new Date()
-      },
-      label = '',
-      data = [],
-      value = 0,
-      link = '',
-      formatHeading
-   } = {}) {
+  constructor({
+    url = '',
+    range = {
+      from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+      to: new Date()
+    },
+    label = '',
+    data = [],
+    value = 0,
+    link = '',
+    formatHeading
+  } = {}) {
 
-      this.url = url;
-      this.from = range.from;
-      this.to = range.to;
-      this.label = label;
-      this._data = data;
-      this.value = value;
-      this.link = link;
-      this.formatHeading = formatHeading;
+    this.url = url;
+    this.from = range.from;
+    this.to = range.to;
+    this.label = label;
+    this._data = data;
+    this.value = value;
+    this.link = link;
+    this.formatHeading = formatHeading;
 
-      this.render();
-      this.update(range.from, range.to);
-   }
+    this.render();
+    this.update(range.from, range.to);
+  }
 
-   set data(newData) {
+  set data(newData) {
 
-      const newValues = Object.values(newData);
+    const newValues = Object.values(newData);
 
-      if (newValues.length) {
-         this.element.classList.remove('column-chart_loading')
-      }
+    if (newValues.length) {
+      this.element.classList.remove('column-chart_loading')
+    }
 
-      this.value = newValues.reduce((sum, value) => sum + value, 0);
+    this.value = newValues.reduce((sum, value) => sum + value, 0);
 
 
-      this.subElements.header.innerHTML = this.getHeading(this.value)
-      this.subElements.body.innerHTML = this.getChartColumns(newValues);
+    this.subElements.header.innerHTML = this.getHeading(this.value)
+    this.subElements.body.innerHTML = this.getChartColumns(newValues);
 
-      return this._data = newData;
-   }
+    return this._data = newData;
+  }
 
-   get data() {
-      return this._data;
-   }
+  get data() {
+    return this._data;
+  }
 
-   getChartColumns(arr) {
+  getChartColumns(arr) {
 
-      const maxColHeight = Math.max(...arr);
+    const maxColHeight = Math.max(...arr);
 
-      return arr.map(colHeight =>
-         `<div style="--value: ${Math.floor(this.chartHeight / maxColHeight * colHeight)}"
+    return arr.map(colHeight =>
+      `<div style="--value: ${Math.floor(this.chartHeight / maxColHeight * colHeight)}"
                     data-tooltip=${((colHeight * 100) / maxColHeight).toFixed() + '%'}></div>`
-      ).join('');
+    ).join('');
 
-   }
+  }
 
-   isLoading() {
+  isLoading() {
 
-      return !this.data.length
-   }
+    return !this.data.length
+  }
 
-   get template() {
-      return `
+  get template() {
+    return `
        <div class="column-chart column-chart_loading" style="--chart-height: 50">
       <div class="column-chart__title">
         Total  ${this.label}
@@ -85,58 +85,58 @@ export default class ColumnChart {
       </div >
     </div >
    `
-   }
+  }
 
-   getHeading(value) {
+  getHeading(value) {
 
-      return this.formatHeading ? this.formatHeading(value) : value;
-   }
+    return this.formatHeading ? this.formatHeading(value) : value;
+  }
 
-   render() {
+  render() {
 
-      const element = document.createElement('div'); // (*)
+    const element = document.createElement('div'); // (*)
 
-      element.innerHTML = this.template;
+    element.innerHTML = this.template;
 
-      this.element = element.firstElementChild;
+    this.element = element.firstElementChild;
 
-      this.subElements = this.getSubElements(this.element);
-   }
+    this.subElements = this.getSubElements(this.element);
+  }
 
-   getSubElements(element) {
+  getSubElements(element) {
 
-      const elements = element.querySelectorAll('[data-element]');
+    const elements = element.querySelectorAll('[data-element]');
 
-      return [...elements].reduce((result, item) => {
-         result[item.dataset.element] = item;
-         return result;
-      }, {})
-   }
+    return [...elements].reduce((result, item) => {
+      result[item.dataset.element] = item;
+      return result;
+    }, {})
+  }
 
-   update(f, t) {
+  update(f, t) {
 
-      const from = this.toFormatDate(f);
-      const to = this.toFormatDate(t);
+    const from = this.toFormatDate(f);
+    const to = this.toFormatDate(t);
 
-      return fetchJson(`${BACKEND_URL}/${this.url}?from=${from}T12%3A16%3A59.193Z&to=${to}T12%3A16%3A59.193Z`)
-         .then((newData) => this.data = newData)
+    return fetchJson(`${BACKEND_URL}/${this.url}?from=${from}T12%3A16%3A59.193Z&to=${to}T12%3A16%3A59.193Z`)
+      .then((newData) => this.data = newData)
 
-   }
+  }
 
-   toFormatDate(rawDate) {
+  toFormatDate(rawDate) {
 
-      return rawDate.toISOString().split('T')[0];
-   }
+    return rawDate.toISOString().split('T')[0];
+  }
 
-   remove() {
-      if (this.element) {
-         this.element.remove();
-      }
-   }
+  remove() {
+    if (this.element) {
+      this.element.remove();
+    }
+  }
 
-   destroy() {
-      this.remove();
-      this.element = null;
-      this.subElements = {};
-   }
+  destroy() {
+    this.remove();
+    this.element = null;
+    this.subElements = {};
+  }
 }

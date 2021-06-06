@@ -177,7 +177,6 @@ export default class SortableTable {
     this.start = this._data.length;
     this.end = this._data.length + this.numberOfNewItems;
 
-
     this.url.searchParams.set('_sort', id);
     this.url.searchParams.set('_order', order);
     this.url.searchParams.set('_start', this.start);
