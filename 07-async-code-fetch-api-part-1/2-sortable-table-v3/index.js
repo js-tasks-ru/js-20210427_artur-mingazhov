@@ -38,7 +38,10 @@ export default class SortableTable {
 
   onScrolledBottom = () => {
 
-    let scrollHeight = Math.max(
+    if (this.isSortLocally)
+      return
+
+    const scrollHeight = Math.max(
       document.body.scrollHeight, document.documentElement.scrollHeight,
       document.body.offsetHeight, document.documentElement.offsetHeight,
       document.body.clientHeight, document.documentElement.clientHeight
@@ -62,7 +65,7 @@ export default class SortableTable {
     isSortLocally = false
   } = {}) {
 
-    this.url = url;
+    this.url = new URL(url, BACKEND_URL);
     this.header = header;
     this._data = data;
     this.isSortLocally = isSortLocally;
@@ -85,6 +88,8 @@ export default class SortableTable {
       this.element.querySelector('.sortable-table').classList.add('sortable-table_empty')
 
     }
+
+    this.subElements.loading.classList.remove('sortable-table__loading-line')
 
     this.subElements.body.innerHTML += this.getBodyItems(newData);
 
@@ -121,7 +126,7 @@ export default class SortableTable {
           <div data-element="body" class="sortable-table__body">
              ${this.getBodyItems(this.data)}
           </div>
-           <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
+           <div data-element="loading" class="loading-line"></div>
           <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
              <div>
                 <p>No products satisfies your filter criteria</p>
@@ -172,7 +177,17 @@ export default class SortableTable {
     this.start = this._data.length;
     this.end = this._data.length + this.numberOfNewItems;
 
-    return fetchJson(`${BACKEND_URL}/${this.url}?_embed=subcategory.category&_sort=${id}&_order=${order}&_start=${this.start}&_end=${this.end}`)
+
+    this.url.searchParams.set('_sort', id);
+    this.url.searchParams.set('_order', order);
+    this.url.searchParams.set('_start', this.start);
+    this.url.searchParams.set('_end', this.end);
+
+
+    this.subElements.loading.classList.add('sortable-table__loading-line')
+
+
+    return fetchJson(this.url.toString())
       .then((newData) => this.data = newData)
   }
 
@@ -219,7 +234,12 @@ export default class SortableTable {
     const start = 0;
     const end = this.numberOfNewItems;
 
-    fetchJson(`${BACKEND_URL}/${this.url}?_embed=subcategory.category&_sort=${id}&_order=${order}&_start=${start}&_end=${end}`)
+    this.url.searchParams.set('_sort', id);
+    this.url.searchParams.set('_order', order);
+    this.url.searchParams.set('_start', start);
+    this.url.searchParams.set('_end', end);
+
+    fetchJson(this.url.toString())
       .then((newData) => {
         this._data = newData;
         this.subElements.body.innerHTML = this.getBodyItems(newData);
@@ -237,6 +257,12 @@ export default class SortableTable {
         child.dataset.order = "";
       }
     }
+  }
+
+  updataBodyItems(data) {
+    this.data = data;
+
+    this.subElements.body.innerHTML = this.getBodyItems(data);
   }
 
   addEventListeners() {
